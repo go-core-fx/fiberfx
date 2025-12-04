@@ -3,6 +3,7 @@ package fiberfx
 import (
 	"strings"
 
+	"github.com/go-core-fx/fiberfx/prometheus"
 	"github.com/gofiber/contrib/fiberzap/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -40,6 +41,10 @@ func New(config Config, option Options, logger *zap.Logger) *fiber.App {
 		Fields: []string{"requestId", "latency", "status", "method", "url", "ip", "ua", "body", "error"},
 	}))
 	app.Use(recover.New())
+
+	if option.withMetrics {
+		prometheus.Register(app)
+	}
 
 	return app
 }

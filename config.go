@@ -12,6 +12,8 @@ type Options struct {
 	getOnly      bool
 	views        fiber.Views
 	errorHandler fiber.ErrorHandler
+
+	withMetrics bool
 }
 
 func (o *Options) WithGetOnly() *Options {
@@ -26,5 +28,10 @@ func (o *Options) WithViews(views fiber.Views) *Options {
 
 func (o *Options) WithErrorHandler(handler fiber.ErrorHandler) *Options {
 	o.errorHandler = handler
+	return o
+}
+
+func (o *Options) WithMetrics() *Options {
+	o.withMetrics = true
 	return o
 }
