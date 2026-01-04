@@ -5,11 +5,13 @@ go 1.24.3
 require (
 	github.com/ansrivas/fiberprometheus/v2 v2.14.0
 	github.com/go-core-fx/fxutil v0.0.0-20251027105421-acea37162eb9
+	github.com/go-core-fx/healthfx v0.0.0-20260104005158-7d0d93eee62f
 	github.com/go-playground/validator/v10 v10.28.0
 	github.com/gofiber/contrib/fiberzap/v2 v2.1.6
 	github.com/gofiber/fiber/v2 v2.52.9
+	github.com/samber/lo v1.52.0
 	go.uber.org/fx v1.24.0
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 )
 
 require (
@@ -17,6 +19,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
+	github.com/go-core-fx/logger v0.0.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
