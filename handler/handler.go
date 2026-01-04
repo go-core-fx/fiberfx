@@ -11,6 +11,10 @@ type validatable interface {
 	Validate() error
 }
 
+type Handler interface {
+	Register(r fiber.Router)
+}
+
 type Base struct {
 	Validator *validator.Validate
 }
