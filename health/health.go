@@ -8,18 +8,13 @@ import (
 )
 
 type Handler struct {
-	version Version
-
 	healthSvc *healthfx.Service
 }
 
 func NewHandler(
-	version Version,
 	healthSvc *healthfx.Service,
 ) handler.Handler {
 	return &Handler{
-		version: version,
-
 		healthSvc: healthSvc,
 	}
 }
@@ -89,10 +84,12 @@ func (h *Handler) writeProbe(c *fiber.Ctx, r healthfx.CheckResult) error {
 }
 
 func (h *Handler) makeResponse(result healthfx.CheckResult) Response {
+	version := h.healthSvc.Version()
+
 	return Response{
 		Status:    Status(result.Status()),
-		Version:   h.version.Version,
-		ReleaseID: h.version.ReleaseID,
+		Version:   version.Version,
+		ReleaseID: version.ReleaseID,
 		Checks: lo.MapValues(
 			result.Checks,
 			func(value healthfx.CheckDetail, _ string) Check {
