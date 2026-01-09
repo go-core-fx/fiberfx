@@ -12,8 +12,6 @@ github.com/gabriel-vasile/mimetype v1.4.10 h1:zyueNbySn/z8mJZHLt6IPw0KoZsiQNszIp
 github.com/gabriel-vasile/mimetype v1.4.10/go.mod h1:d+9Oxyo1wTzWdyVUPMmXFvp4F9tea18J8ufA774AB3s=
 github.com/go-core-fx/fxutil v0.0.0-20251027105421-acea37162eb9 h1:0rpJfg+QM3TAFCTignjzPovNkBHeEjOe+ILo+2Mz9aA=
 github.com/go-core-fx/fxutil v0.0.0-20251027105421-acea37162eb9/go.mod h1:nljLWn+Ck1Rrqv9DPdD7Czdd0j5uF+9YRPNs/DpCfnw=
-github.com/go-core-fx/healthfx v0.0.0-20260104001258-9cf70aaf07b8 h1:5hhLYGGQo2CsbaM3VuHzh0d3qYDl6rCxoNoUCgXSWZw=
-github.com/go-core-fx/healthfx v0.0.0-20260104001258-9cf70aaf07b8/go.mod h1:MxESD5T1NpBqcuVwn6bWHPqMdvhkzI+cKbJClftaRfI=
 github.com/go-core-fx/healthfx v0.0.0-20260104005158-7d0d93eee62f h1:L0kAv4HL5+Xt4SuYGd8dKGPHykeq5CZAQrGWr5LOHmM=
 github.com/go-core-fx/healthfx v0.0.0-20260104005158-7d0d93eee62f/go.mod h1:MxESD5T1NpBqcuVwn6bWHPqMdvhkzI+cKbJClftaRfI=
 github.com/go-core-fx/logger v0.0.1 h1:e3iJPEfV09fAZnVdROhcpDEbw7DHaNfY/OWCLX0wipA=
