@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/ansrivas/fiberprometheus/v2 v2.14.0
 	github.com/go-core-fx/fxutil v0.0.0-20251027105421-acea37162eb9
-	github.com/go-core-fx/healthfx v0.0.0-20260104005158-7d0d93eee62f
+	github.com/go-core-fx/healthfx v0.0.2-0.20260109013230-f7729a0a06bc
 	github.com/go-playground/validator/v10 v10.28.0
 	github.com/gofiber/contrib/fiberzap/v2 v2.1.6
 	github.com/gofiber/fiber/v2 v2.52.9
@@ -39,10 +39,10 @@ require (
 	go.opentelemetry.io/otel v1.37.0 // indirect
 	go.opentelemetry.io/otel/trace v1.37.0 // indirect
 	go.uber.org/dig v1.19.0 // indirect
-	go.uber.org/multierr v1.10.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	golang.org/x/crypto v0.42.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 )

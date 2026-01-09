@@ -24,7 +24,7 @@ type Check struct {
 	// Unit of measurement for the observed value.
 	ObservedUnit string `json:"observedUnit,omitempty"`
 	// Observed value of the check.
-	ObservedValue int `json:"observedValue"`
+	ObservedValue any `json:"observedValue"`
 	// Status of the check.
 	// It can be one of the following values: "pass", "warn", or "fail".
 	Status Status `json:"status"`
