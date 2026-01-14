@@ -1,7 +1,6 @@
 package health
 
 import (
-	"github.com/go-core-fx/fiberfx/handler"
 	"github.com/go-core-fx/healthfx"
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -13,7 +12,7 @@ type Handler struct {
 
 func NewHandler(
 	healthSvc *healthfx.Service,
-) handler.Handler {
+) *Handler {
 	return &Handler{
 		healthSvc: healthSvc,
 	}
