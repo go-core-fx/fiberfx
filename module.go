@@ -26,8 +26,8 @@ func Module() fx.Option {
 						return fmt.Errorf("listen %s: %w", cfg.Address, err)
 					}
 					go func() {
-						if err := app.Listener(ln); err != nil && !errors.Is(err, net.ErrClosed) {
-							logger.Error("server failed", zap.Error(err))
+						if listenErr := app.Listener(ln); listenErr != nil && !errors.Is(listenErr, net.ErrClosed) {
+							logger.Error("server failed", zap.Error(listenErr))
 							if shErr := sd.Shutdown(); shErr != nil {
 								logger.Error("fx shutdown failed", zap.Error(shErr))
 							}

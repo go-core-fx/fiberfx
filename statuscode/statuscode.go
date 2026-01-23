@@ -2,7 +2,7 @@ package statuscode
 
 import "github.com/gofiber/fiber/v2"
 
-// New creates a new middleware handler
+// New creates a new middleware handler.
 func New(config ...Config) fiber.Handler {
 	cfg := configDefault(config...)
 
