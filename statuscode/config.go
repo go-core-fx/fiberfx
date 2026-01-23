@@ -23,7 +23,7 @@ type Config struct {
 	StatusMessage string
 }
 
-// ConfigDefault is the default config
+// ConfigDefault is the default config.
 func ConfigDefault() Config {
 	return Config{
 		Next:          nil,
@@ -32,7 +32,7 @@ func ConfigDefault() Config {
 	}
 }
 
-// Helper function to set default values
+// Helper function to set default values.
 func configDefault(config ...Config) Config {
 	// Return default config if nothing provided
 	if len(config) < 1 {
