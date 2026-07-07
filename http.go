@@ -20,6 +20,7 @@ func New(config Config, option Options, logger *zap.Logger) *fiber.App {
 		GETOnly:                 option.getOnly,
 		ProxyHeader:             config.ProxyHeader,
 		TrustedProxies:          config.Proxies,
+		UnescapePath:            true,
 		Views:                   option.views,
 	})
 	app.Use(requestid.New())
