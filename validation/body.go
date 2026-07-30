@@ -37,6 +37,12 @@ func ValidateBody[T any](c *fiber.Ctx, validate *validator.Validate) (*T, error)
 		return nil, NewErrors(err)
 	}
 
+	if v, ok := any(&req).(Validatable); ok {
+		if err := v.Validate(); err != nil {
+			return nil, NewErrors(err)
+		}
+	}
+
 	return &req, nil
 }
 
