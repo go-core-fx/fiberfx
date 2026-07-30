@@ -19,6 +19,14 @@ type Error struct {
 // Errors represents multiple validation errors.
 type Errors []Error
 
+// Validatable is an interface that types can implement to provide
+// custom validation logic beyond struct-tag-based validation.
+// When implemented, Validate() is called after struct-tag validation
+// in ValidateBody and related functions.
+type Validatable interface {
+	Validate() error
+}
+
 // NewErrors converts validator errors to ValidationErrors.
 func NewErrors(err error) error {
 	if errs, ok := lo.ErrorsAs[validator.ValidationErrors](err); ok {
@@ -34,7 +42,7 @@ func NewErrors(err error) error {
 		}
 		return Errors(validationErrs)
 	}
-	return err
+	return Errors{{Field: "_", Tag: "", Value: "", Message: err.Error()}}
 }
 
 func (ve Errors) Error() string {
