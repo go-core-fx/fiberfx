@@ -29,6 +29,9 @@ type Validatable interface {
 
 // NewErrors converts validator errors to ValidationErrors.
 func NewErrors(err error) error {
+	if err == nil {
+		return nil
+	}
 	if errs, ok := lo.ErrorsAs[validator.ValidationErrors](err); ok {
 		validationErrs := make([]Error, 0, len(errs))
 		for _, e := range errs {
