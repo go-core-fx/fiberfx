@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func New() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		if err := c.Next(); err != nil {
-			return err //nolint:wrapcheck // already wrapped
+			return err
 		}
 
 		contentType := string(c.Response().Header.ContentType())

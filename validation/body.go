@@ -3,7 +3,7 @@ package validation
 import (
 	"github.com/go-core-fx/fiberfx"
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type localKey string
@@ -14,7 +14,7 @@ const (
 
 // NewBody validates the request body and stores the validated request in the context.
 func NewBody[T any](validate *validator.Validate) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		req, err := ValidateBody[T](c, validate)
 		if err != nil {
 			return err
@@ -27,9 +27,9 @@ func NewBody[T any](validate *validator.Validate) fiber.Handler {
 }
 
 // ValidateBody validates the request body.
-func ValidateBody[T any](c *fiber.Ctx, validate *validator.Validate) (*T, error) {
+func ValidateBody[T any](c fiber.Ctx, validate *validator.Validate) (*T, error) {
 	var req T
-	if err := c.BodyParser(&req); err != nil {
+	if err := c.Bind().Body(&req); err != nil {
 		return nil, NewErrors(err)
 	}
 
@@ -47,14 +47,14 @@ func ValidateBody[T any](c *fiber.Ctx, validate *validator.Validate) (*T, error)
 }
 
 // GetValidatedBody retrieves the validated request from the context.
-func GetValidatedBody[T any](c *fiber.Ctx) (*T, bool) {
+func GetValidatedBody[T any](c fiber.Ctx) (*T, bool) {
 	b, ok := c.Locals(localBody).(*T)
 	return b, ok
 }
 
 // DecorateWithBody decorates a handler with the validated request.
-func DecorateWithBody[T any](h func(c *fiber.Ctx, body *T) error) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+func DecorateWithBody[T any](h func(c fiber.Ctx, body *T) error) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		body, ok := GetValidatedBody[T](c)
 		if !ok {
 			return c.Status(fiber.StatusBadRequest).JSON(
@@ -71,8 +71,8 @@ func DecorateWithBody[T any](h func(c *fiber.Ctx, body *T) error) fiber.Handler 
 }
 
 // DecorateWithBodyEx decorates a handler with the validated request.
-func DecorateWithBodyEx[T any](validate *validator.Validate, h func(c *fiber.Ctx, body *T) error) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+func DecorateWithBodyEx[T any](validate *validator.Validate, h func(c fiber.Ctx, body *T) error) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		body, err := ValidateBody[T](c, validate)
 		if err != nil {
 			return err

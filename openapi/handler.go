@@ -4,9 +4,9 @@ import (
 	"sync"
 
 	"github.com/go-core-fx/healthfx"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/etag"
-	"github.com/gofiber/swagger"
+	"github.com/gofiber/contrib/v3/swaggo"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/etag"
 	"github.com/swaggo/swag"
 )
 
@@ -41,7 +41,7 @@ func (h *Handler) Register(router fiber.Router) {
 
 	router.Use("*",
 		// Pre-middleware: set host/scheme dynamically
-		func(c *fiber.Ctx) error {
+		func(c fiber.Ctx) error {
 			h.once.Do(func() {
 				if h.docs.Host == "" {
 					h.docs.Host = c.Hostname()
@@ -55,6 +55,6 @@ func (h *Handler) Register(router fiber.Router) {
 			return c.Next()
 		},
 		etag.New(etag.Config{Weak: true}),
-		swagger.New(swagger.Config{Layout: "BaseLayout", URL: "doc.json"}),
+		swaggo.New(swaggo.Config{Layout: "BaseLayout", URL: "doc.json"}),
 	)
 }

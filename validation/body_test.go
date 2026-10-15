@@ -10,7 +10,7 @@ import (
 	"github.com/go-core-fx/fiberfx"
 	"github.com/go-core-fx/fiberfx/validation"
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 )
 
@@ -42,11 +42,13 @@ type nonValidatableBody struct {
 	Name string `json:"name" validate:"required"`
 }
 
-func okHandler(c *fiber.Ctx) error {
+func okHandler(c fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
 func TestValidateBody_ValidatableReturnsNil(t *testing.T) {
+	t.Parallel()
+
 	app := fiber.New()
 	app.Post("/", validation.Middleware, validation.NewBody[validatableBody](newTestValidator()), okHandler)
 
@@ -54,7 +56,7 @@ func TestValidateBody_ValidatableReturnsNil(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -64,6 +66,8 @@ func TestValidateBody_ValidatableReturnsNil(t *testing.T) {
 }
 
 func TestValidateBody_ValidatableReturnsPlainError(t *testing.T) {
+	t.Parallel()
+
 	app := fiber.New()
 	app.Post("/", validation.Middleware, validation.NewBody[validatableBody](newTestValidator()), okHandler)
 
@@ -71,7 +75,7 @@ func TestValidateBody_ValidatableReturnsPlainError(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -92,6 +96,8 @@ func TestValidateBody_ValidatableReturnsPlainError(t *testing.T) {
 }
 
 func TestValidateBody_ValidatableReturnsValidationErrors(t *testing.T) {
+	t.Parallel()
+
 	app := fiber.New()
 	app.Post(
 		"/",
@@ -104,7 +110,7 @@ func TestValidateBody_ValidatableReturnsValidationErrors(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -122,6 +128,8 @@ func TestValidateBody_ValidatableReturnsValidationErrors(t *testing.T) {
 }
 
 func TestValidateBody_NonValidatable(t *testing.T) {
+	t.Parallel()
+
 	app := fiber.New()
 	app.Post("/", validation.Middleware, validation.NewBody[nonValidatableBody](newTestValidator()), okHandler)
 
@@ -129,7 +137,7 @@ func TestValidateBody_NonValidatable(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -139,6 +147,8 @@ func TestValidateBody_NonValidatable(t *testing.T) {
 }
 
 func TestValidateBody_NonValidatable_FailsStructTag(t *testing.T) {
+	t.Parallel()
+
 	app := fiber.New()
 	app.Post("/", validation.Middleware, validation.NewBody[nonValidatableBody](newTestValidator()), okHandler)
 
@@ -146,7 +156,7 @@ func TestValidateBody_NonValidatable_FailsStructTag(t *testing.T) {
 	req, _ := http.NewRequest(http.MethodPost, "/", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := app.Test(req, -1)
+	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -164,6 +174,8 @@ func TestValidateBody_NonValidatable_FailsStructTag(t *testing.T) {
 }
 
 func TestNewErrors_PlainError(t *testing.T) {
+	t.Parallel()
+
 	plainErr := errors.New("something went wrong")
 	result := validation.NewErrors(plainErr)
 
@@ -183,6 +195,8 @@ func TestNewErrors_PlainError(t *testing.T) {
 }
 
 func TestNewErrors_ValidationErrors(t *testing.T) {
+	t.Parallel()
+
 	ve := newTestValidator().Var("", "required")
 	result := validation.NewErrors(ve)
 

@@ -2,11 +2,11 @@ package validation
 
 import (
 	"github.com/go-core-fx/fiberfx"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 )
 
-func Middleware(c *fiber.Ctx) error {
+func Middleware(c fiber.Ctx) error {
 	err := c.Next()
 	if err == nil {
 		return nil
@@ -22,5 +22,5 @@ func Middleware(c *fiber.Ctx) error {
 		)
 	}
 
-	return err //nolint:wrapcheck // pass to upstream middleware
+	return err
 }

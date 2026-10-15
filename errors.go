@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 )
 
@@ -20,7 +20,7 @@ type ErrorFormatter func(err error, code int) any
 // The logger is used to log errors that occur while rendering the view.
 // The layouts are passed to the Render method as is.
 func NewViewsErrorHandler(logger *zap.Logger, template string, layouts ...string) fiber.ErrorHandler {
-	return func(c *fiber.Ctx, err error) error {
+	return func(c fiber.Ctx, err error) error {
 		code := preHandleError(err, logger)
 
 		msg := makeMessage(err, code)
@@ -44,7 +44,7 @@ func NewJSONErrorHandler(logger *zap.Logger) fiber.ErrorHandler {
 // using the provided ErrorFormatter, and sends the result as a JSON response. If the formatter is nil, it falls
 // back to using NewErrorResponse to format the error.
 func NewCustomJSONErrorHandler(logger *zap.Logger, formatter ErrorFormatter) fiber.ErrorHandler {
-	return func(c *fiber.Ctx, err error) error {
+	return func(c fiber.Ctx, err error) error {
 		code := preHandleError(err, logger)
 
 		if formatter != nil {
@@ -58,8 +58,7 @@ func NewCustomJSONErrorHandler(logger *zap.Logger, formatter ErrorFormatter) fib
 func preHandleError(err error, logger *zap.Logger) int {
 	code := fiber.StatusInternalServerError
 
-	var e *fiber.Error
-	if errors.As(err, &e) {
+	if e, ok := errors.AsType[*fiber.Error](err); ok {
 		code = e.Code
 	}
 
