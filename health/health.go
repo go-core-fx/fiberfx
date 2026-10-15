@@ -2,7 +2,7 @@ package health
 
 import (
 	"github.com/go-core-fx/healthfx"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 )
 
@@ -20,7 +20,7 @@ func NewHandler(
 
 func (h *Handler) Register(router fiber.Router) {
 	router = router.Group("/health")
-	router.Use(func(c *fiber.Ctx) error {
+	router.Use(func(c fiber.Ctx) error {
 		if h.healthSvc == nil {
 			return c.SendStatus(fiber.StatusNotFound)
 		}
@@ -44,7 +44,7 @@ func (h *Handler) Register(router fiber.Router) {
 //	@Router			/health/live [get]
 //
 // Liveness probe.
-func (h *Handler) getLiveness(c *fiber.Ctx) error {
+func (h *Handler) getLiveness(c fiber.Ctx) error {
 	return h.writeProbe(c, h.healthSvc.CheckLiveness(c.Context()))
 }
 
@@ -57,7 +57,7 @@ func (h *Handler) getLiveness(c *fiber.Ctx) error {
 //	@Router			/health/ready [get]
 //
 // Readiness probe.
-func (h *Handler) getReadiness(c *fiber.Ctx) error {
+func (h *Handler) getReadiness(c fiber.Ctx) error {
 	return h.writeProbe(c, h.healthSvc.CheckReadiness(c.Context()))
 }
 
@@ -70,11 +70,11 @@ func (h *Handler) getReadiness(c *fiber.Ctx) error {
 //	@Router			/health/startup [get]
 //
 // Startup probe.
-func (h *Handler) getStartup(c *fiber.Ctx) error {
+func (h *Handler) getStartup(c fiber.Ctx) error {
 	return h.writeProbe(c, h.healthSvc.CheckStartup(c.Context()))
 }
 
-func (h *Handler) writeProbe(c *fiber.Ctx, r healthfx.CheckResult) error {
+func (h *Handler) writeProbe(c fiber.Ctx, r healthfx.CheckResult) error {
 	status := fiber.StatusOK
 	if r.Status() == healthfx.StatusFail {
 		status = fiber.StatusServiceUnavailable

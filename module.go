@@ -7,7 +7,7 @@ import (
 	"net"
 
 	"github.com/go-core-fx/fxutil"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )
@@ -16,7 +16,12 @@ func Module() fx.Option {
 	return fx.Module(
 		"http",
 		fxutil.WithNamedLogger("http"),
-		fx.Provide(New),
+		fx.Provide(
+			fx.Annotate(
+				New,
+				fx.ParamTags("", "", `optional:"true"`, ""),
+			),
+		),
 		fx.Invoke(func(lc fx.Lifecycle, cfg Config, app *fiber.App, logger *zap.Logger, sd fx.Shutdowner) {
 			lc.Append(fx.Hook{
 				OnStart: func(ctx context.Context) error {
@@ -26,7 +31,8 @@ func Module() fx.Option {
 						return fmt.Errorf("listen %s: %w", cfg.Address, err)
 					}
 					go func() {
-						if listenErr := app.Listener(ln); listenErr != nil && !errors.Is(listenErr, net.ErrClosed) {
+						listenErr := app.Listener(ln, fiber.ListenConfig{DisableStartupMessage: true})
+						if listenErr != nil && !errors.Is(listenErr, net.ErrClosed) {
 							logger.Error("server failed", zap.Error(listenErr))
 							if shErr := sd.Shutdown(); shErr != nil {
 								logger.Error("fx shutdown failed", zap.Error(shErr))

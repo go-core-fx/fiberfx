@@ -1,6 +1,6 @@
 package statuscode
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber/v3"
 
 const (
 	defaultStatusCode    = fiber.StatusNotFound
@@ -12,7 +12,7 @@ type Config struct {
 	// Next defines a function to skip this middleware when returned true.
 	//
 	// Optional. Default: nil
-	Next func(c *fiber.Ctx) bool
+	Next func(c fiber.Ctx) bool
 	// Response status code
 	//
 	// Optional. Default: 404
