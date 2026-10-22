@@ -1,12 +1,12 @@
 package statuscode
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber/v3"
 
 // New creates a new middleware handler.
 func New(config ...Config) fiber.Handler {
 	cfg := configDefault(config...)
 
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		// Don't execute middleware if Next returns true
 		if cfg.Next != nil && cfg.Next(c) {
 			return c.Next()

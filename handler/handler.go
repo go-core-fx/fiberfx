@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type validatable interface {
@@ -21,8 +21,8 @@ type Base struct {
 
 // BodyParserValidator parses the request body and validates the resulting object.
 // It returns an error if parsing or validation fails.
-func (b *Base) BodyParserValidator(ctx *fiber.Ctx, out any) error {
-	if err := ctx.BodyParser(out); err != nil {
+func (b *Base) BodyParserValidator(ctx fiber.Ctx, out any) error {
+	if err := ctx.Bind().Body(out); err != nil {
 		return fmt.Errorf("failed to parse body: %w", err)
 	}
 
@@ -31,8 +31,8 @@ func (b *Base) BodyParserValidator(ctx *fiber.Ctx, out any) error {
 
 // QueryParserValidator parses the query string and validates the resulting object.
 // It returns an error if parsing or validation fails.
-func (b *Base) QueryParserValidator(ctx *fiber.Ctx, out any) error {
-	if err := ctx.QueryParser(out); err != nil {
+func (b *Base) QueryParserValidator(ctx fiber.Ctx, out any) error {
+	if err := ctx.Bind().Query(out); err != nil {
 		return fmt.Errorf("failed to parse query: %w", err)
 	}
 
@@ -41,8 +41,11 @@ func (b *Base) QueryParserValidator(ctx *fiber.Ctx, out any) error {
 
 // ParamParserValidator parses the request parameters and validates the resulting object.
 // It returns an error if parsing or validation fails.
-func (b *Base) ParamParserValidator(ctx *fiber.Ctx, out any) error {
-	if err := ctx.ParamsParser(out); err != nil {
+//
+// The route parameter is bound from the "uri" struct tag, the Fiber v3 name for
+// the tag Fiber v2 read as "params".
+func (b *Base) ParamParserValidator(ctx fiber.Ctx, out any) error {
+	if err := ctx.Bind().URI(out); err != nil {
 		return fmt.Errorf("failed to parse params: %w", err)
 	}
 
@@ -51,8 +54,11 @@ func (b *Base) ParamParserValidator(ctx *fiber.Ctx, out any) error {
 
 // HeaderParserValidator parses the request headers and validates the resulting object.
 // It returns an error if parsing or validation fails.
-func (b *Base) HeaderParserValidator(ctx *fiber.Ctx, out any) error {
-	if err := ctx.ReqHeaderParser(out); err != nil {
+//
+// The header is bound from the "header" struct tag, the Fiber v3 name for the
+// tag Fiber v2 read as "reqHeader".
+func (b *Base) HeaderParserValidator(ctx fiber.Ctx, out any) error {
+	if err := ctx.Bind().Header(out); err != nil {
 		return fmt.Errorf("failed to parse headers: %w", err)
 	}
 

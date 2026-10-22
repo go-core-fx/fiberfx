@@ -4,28 +4,37 @@ import (
 	"strings"
 
 	"github.com/go-core-fx/fiberfx/prometheus"
-	"github.com/gofiber/contrib/fiberzap/v2"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
+	fiberzap "github.com/gofiber/contrib/v3/zap"
+	"github.com/gofiber/fiber/v3"
+	recovermw "github.com/gofiber/fiber/v3/middleware/recover"
+	"github.com/gofiber/fiber/v3/middleware/requestid"
+	promclient "github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 )
 
-func New(config Config, option Options, logger *zap.Logger) *fiber.App {
-	app := fiber.New(fiber.Config{
-		DisableStartupMessage:   true,
-		EnableIPValidation:      true,
-		EnableTrustedProxyCheck: len(config.Proxies) > 0,
-		ErrorHandler:            option.errorHandler,
-		GETOnly:                 option.getOnly,
-		ProxyHeader:             config.ProxyHeader,
-		TrustedProxies:          config.Proxies,
-		UnescapePath:            true,
-		Views:                   option.views,
-	})
+func New(config Config, option Options, registry *promclient.Registry, logger *zap.Logger) *fiber.App {
+	fields := []string{"requestId", "latency", "status", "method", "url", "ip", "ua", "body", "error"}
+	if len(option.requestLogFields) > 0 {
+		fields = option.requestLogFields
+	}
+
+	fiberConfig := fiber.Config{
+		EnableIPValidation: true,
+		ProxyHeader:        config.ProxyHeader,
+		TrustProxy:         len(config.Proxies) > 0,
+		TrustProxyConfig: fiber.TrustProxyConfig{
+			Proxies: config.Proxies,
+		},
+		UnescapePath: true,
+	}
+	if option.configureFiber != nil {
+		option.configureFiber(&fiberConfig)
+	}
+
+	app := fiber.New(fiberConfig)
 	app.Use(requestid.New())
 	app.Use(fiberzap.New(fiberzap.Config{
-		Next: func(c *fiber.Ctx) bool {
+		Next: func(c fiber.Ctx) bool {
 			p := c.Path()
 			// Normalize trailing slash
 			for len(p) > 1 && p[len(p)-1] == '/' {
@@ -35,16 +44,16 @@ func New(config Config, option Options, logger *zap.Logger) *fiber.App {
 			return p == "/health" || p == "/metrics" ||
 				strings.HasPrefix(p, "/health/") || strings.HasPrefix(p, "/metrics/")
 		},
-		SkipBody: func(c *fiber.Ctx) bool {
+		SkipBody: func(c fiber.Ctx) bool {
 			return c.Response().StatusCode() < fiber.StatusBadRequest
 		},
 		Logger: logger,
-		Fields: []string{"requestId", "latency", "status", "method", "url", "ip", "ua", "body", "error"},
+		Fields: fields,
 	}))
-	app.Use(recover.New())
+	app.Use(recovermw.New())
 
 	if option.withMetrics {
-		prometheus.Register(app)
+		prometheus.Register(app, registry)
 	}
 
 	return app
