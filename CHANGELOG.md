@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Configurable request log fields** — `WithRequestLogFields` replaces the fields written to the request log. An empty list keeps the package defaults.
 
+### Bug Fixes
+
+- **Handler base helpers** — `BodyParserValidator`, `QueryParserValidator`, `ParamParserValidator` and `HeaderParserValidator` now return a `400` error on parse or validation failure instead of a `500`.
+
 ## [0.6.0] - 2026-08-01
 
 ### New Features

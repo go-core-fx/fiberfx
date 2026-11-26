@@ -444,7 +444,9 @@ app.Get("/users/:id", func(c fiber.Ctx) error {
 | `ParamParserValidator(c, out)`  | route parameters | `uri`                 | `params`     |
 | `HeaderParserValidator(c, out)` | request headers  | `header`              | `reqHeader`  |
 
-The Fiber v3 binder reads `uri` and `header`; the v2 tag names are not read.
+The Fiber v3 binder reads `uri` and `header`; the v2 tag names are not read. Parse and validation failures are
+returned as `400` errors, so the JSON error handler renders them with status `400` and the `fiberfx.ErrorResponse`
+shape.
 
 ### JSON Content Type
 
