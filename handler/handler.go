@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 
+	"github.com/go-core-fx/fiberfx/validation"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 )
@@ -80,5 +81,5 @@ func (b *Base) validate(out any) error {
 }
 
 func badRequest(err error) error {
-	return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	return validation.NewErrors(err) //nolint:wrapcheck // passthrough
 }

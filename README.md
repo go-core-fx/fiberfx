@@ -397,6 +397,20 @@ app.Post("/users",
 }
 ```
 
+Binding failures (`*fiber.BindError`) are also rendered as `400`, with the bind source, field and underlying error in
+`details`:
+
+```json
+{
+  "message": "bind from body: unexpected end of JSON input",
+  "code": 400,
+  "details": {
+    "source": "body",
+    "message": "unexpected end of JSON input"
+  }
+}
+```
+
 | Function                                        | Purpose                                                               |
 | ----------------------------------------------- | --------------------------------------------------------------------- |
 | `validation.Middleware`                         | Middleware that renders validation failures as a `400` JSON response. |

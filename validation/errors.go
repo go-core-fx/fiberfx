@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/fiber/v3"
 	"github.com/samber/lo"
 )
 
@@ -32,6 +33,18 @@ func NewErrors(err error) error {
 	if err == nil {
 		return nil
 	}
+
+	if bindErr, ok := lo.ErrorsAs[*fiber.BindError](err); ok {
+		return Errors{
+			Error{
+				Field:   bindErr.Field,
+				Tag:     bindErr.Source,
+				Value:   "",
+				Message: bindErr.Error(),
+			},
+		}
+	}
+
 	if errs, ok := lo.ErrorsAs[validator.ValidationErrors](err); ok {
 		validationErrs := make([]Error, 0, len(errs))
 		for _, e := range errs {
@@ -45,6 +58,7 @@ func NewErrors(err error) error {
 		}
 		return Errors(validationErrs)
 	}
+
 	return Errors{{Field: "_", Tag: "", Value: "", Message: err.Error()}}
 }
 
