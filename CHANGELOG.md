@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bug Fixes
 
-- **Handler base helpers** — `BodyParserValidator`, `QueryParserValidator`, `ParamParserValidator` and `HeaderParserValidator` now return a `400` error on parse or validation failure instead of a `500`.
+- **Handler base helpers** — `BodyParserValidator`, `QueryParserValidator`, `ParamParserValidator` and `HeaderParserValidator` now return `validation.Errors` on parse or validation failure. With `validation.Middleware` registered, the response is `400` instead of `500`.
 
 ## [0.6.0] - 2026-08-01
 
