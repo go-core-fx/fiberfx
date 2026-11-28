@@ -397,6 +397,25 @@ app.Post("/users",
 }
 ```
 
+Binding failures (`*fiber.BindError`) are also rendered as `400`, with the bind source in `tag` and the underlying
+error in `message`:
+
+```json
+{
+  "message": "validation failed: : bind from body: unexpected end of JSON input",
+  "code": 400,
+  "details": [
+    {
+      "field": "",
+      "tag": "body",
+      "message": "bind from body: unexpected end of JSON input"
+    }
+  ]
+}
+```
+
+A malformed body has no field, so the `validation failed:` prefix is followed by an empty field name.
+
 | Function                                        | Purpose                                                               |
 | ----------------------------------------------- | --------------------------------------------------------------------- |
 | `validation.Middleware`                         | Middleware that renders validation failures as a `400` JSON response. |
@@ -421,20 +440,24 @@ func (r *CreateUserRequest) Validate() error {
 ### Handler Base Helpers
 
 `handler.Base` binds and validates a request in one call. It is useful when a route needs the parsed values
-directly instead of a validated body in the context:
+directly instead of a validated body in the context. Register `validation.Middleware` on the route to render
+those failures as `400`:
 
 ```go
 base := &handler.Base{Validator: validator.New()}
 
-app.Get("/users/:id", func(c fiber.Ctx) error {
-	var out struct {
-		ID string `uri:"id" validate:"required"`
-	}
-	if err := base.ParamParserValidator(c, &out); err != nil {
-		return err
-	}
-	return c.SendString(out.ID)
-})
+app.Get("/users/:id",
+	validation.Middleware,
+	func(c fiber.Ctx) error {
+		var out struct {
+			ID string `uri:"id" validate:"required"`
+		}
+		if err := base.ParamParserValidator(c, &out); err != nil {
+			return err
+		}
+		return c.SendString(out.ID)
+	},
+)
 ```
 
 | Method                          | Binds from       | Struct tag (Fiber v3) | Fiber v2 tag |
@@ -444,7 +467,9 @@ app.Get("/users/:id", func(c fiber.Ctx) error {
 | `ParamParserValidator(c, out)`  | route parameters | `uri`                 | `params`     |
 | `HeaderParserValidator(c, out)` | request headers  | `header`              | `reqHeader`  |
 
-The Fiber v3 binder reads `uri` and `header`; the v2 tag names are not read.
+The Fiber v3 binder reads `uri` and `header`; the v2 tag names are not read. Parse and validation failures are
+returned as `validation.Errors`. `validation.Middleware` renders them with status `400` and the
+`fiberfx.ErrorResponse` shape; without it, the error reaches Fiber's error handler, which responds with `500`.
 
 ### JSON Content Type
 
